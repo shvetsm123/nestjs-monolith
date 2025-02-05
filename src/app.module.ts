@@ -1,10 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { UserModule } from './user/user.module';
+import { LoggerModule } from 'nestjs-pino';
+import { OrderModule } from './order/order.module';
+import { ProductModule } from './product/product.module';
+import { BrandModule } from './brand/brand.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            singleLine: true,
+          },
+        },
+      },
+    }),
+    PrismaModule,
+    UserModule,
+    OrderModule,
+    ProductModule,
+    BrandModule,
+  ],
 })
 export class AppModule {}

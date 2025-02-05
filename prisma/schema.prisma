@@ -26,7 +26,7 @@ model User {
 
 model Order {
   id           Int            @id @default(autoincrement())
-  User         User?          @relation(fields: [userId], references: [id])
+  User         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int?
   orderProduct OrderProduct[]
   createAt     DateTime       @default(now()) @map("created_at")
@@ -37,17 +37,32 @@ model Order {
 
 model Product {
   id           Int            @id @default(autoincrement())
+  title        String
+  description  String?        @db.VarChar(255)
+  price        Int
   orderProduct OrderProduct[]
+  Brand        Brand?         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brandId      Int?
   createAt     DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
   @@map("products")
 }
 
+model Brand {
+  id        Int       @id @default(autoincrement())
+  title     String
+  product   Product[]
+  createAt  DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("brands")
+}
+
 model OrderProduct {
-  Order     Order   @relation(fields: [orderId], references: [id])
+  Order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   Int
-  Product   Product @relation(fields: [productId], references: [id])
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
 
   @@id([orderId, productId])
