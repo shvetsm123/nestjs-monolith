@@ -4,7 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 @Injectable()
 export class BaseResourceService {
   constructor(
-    private readonly prisma: PrismaService,
+    protected prisma: PrismaService,
     private readonly model: string,
   ) {}
 
