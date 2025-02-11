@@ -8,6 +8,7 @@ import { BrandModule } from './brand/brand.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { ElasticModule } from './elastic/elastic.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RedisModule } from './redis/redis.module';
     BrandModule,
     AuthModule,
     RedisModule,
+    ElasticModule,
   ],
 })
 export class AppModule {}

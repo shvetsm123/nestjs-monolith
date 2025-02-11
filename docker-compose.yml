@@ -23,6 +23,18 @@ services:
     networks:
       - app-network
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.1
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "xpack.security.enabled=false"
+      - "xpack.security.http.ssl.enabled=false"
+    ports:
+      - "9200:9200"
+    networks:
+      - app-network
+
 volumes:
   postgres_data:
   redis_data:
