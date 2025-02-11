@@ -13,8 +13,19 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   app-network:
