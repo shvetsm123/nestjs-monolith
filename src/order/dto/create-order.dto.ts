@@ -1,4 +1,11 @@
-import { ArrayNotEmpty, IsArray, IsInt, IsOptional } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateOrderDto {
   @IsOptional()
@@ -8,4 +15,14 @@ export class CreateOrderDto {
   @IsArray()
   @ArrayNotEmpty()
   orderProduct: { productId: number }[];
+
+  @IsBoolean()
+  isPaid: boolean;
+
+  @IsOptional()
+  @IsString()
+  paymentIntentId?: string;
+
+  @IsInt()
+  totalAmount: number;
 }

@@ -3,18 +3,34 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import Redis from 'ioredis';
+import Stripe from 'stripe';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
+    @Inject('STRIPE_CLIENT') private readonly stripeClient: Stripe,
   ) {}
 
   async create(dto: CreateOrderDto) {
-    const { userId, orderProduct } = dto;
+    const { userId, orderProduct, isPaid, paymentIntentId, totalAmount } = dto;
 
     await this.redisClient.del('orders_all');
+
+    let createdPaymentIntentId = paymentIntentId;
+    if (!isPaid) {
+      const paymentIntent = await this.stripeClient.paymentIntents.create({
+        amount: totalAmount,
+        currency: 'usd',
+        payment_method: 'pm_card_visa',
+        automatic_payment_methods: {
+          enabled: true,
+          allow_redirects: 'never',
+        },
+      });
+      createdPaymentIntentId = paymentIntent.id;
+    }
 
     return this.prisma.order.create({
       data: {
@@ -28,6 +44,9 @@ export class OrderService {
             productId: product.productId,
           })),
         },
+        totalAmount,
+        isPaid,
+        paymentIntentId: createdPaymentIntentId,
       },
     });
   }
@@ -93,6 +112,13 @@ export class OrderService {
   async remove(id: number) {
     return this.prisma.order.delete({
       where: { id },
+    });
+  }
+
+  async updatePaymentStatus(paymentIntentId: string, isPaid: boolean) {
+    return this.prisma.order.update({
+      where: { paymentIntentId },
+      data: { isPaid },
     });
   }
 }
