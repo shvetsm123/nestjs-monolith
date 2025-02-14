@@ -25,6 +25,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.1
+    restart: always
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
@@ -32,12 +33,26 @@ services:
       - "xpack.security.http.ssl.enabled=false"
     ports:
       - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - app-network
 
 volumes:
   postgres_data:
   redis_data:
+  es_data:
+  mongo_data:
 
 networks:
   app-network:
