@@ -16,8 +16,6 @@ export class OrderService {
   async create(dto: CreateOrderDto) {
     const { userId, orderProduct, isPaid, paymentIntentId, totalAmount } = dto;
 
-    await this.redisClient.del('orders_all');
-
     let createdPaymentIntentId = paymentIntentId;
     if (!isPaid) {
       const paymentIntent = await this.stripeClient.paymentIntents.create({
