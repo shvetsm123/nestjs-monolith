@@ -1,4 +1,21 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - elasticsearch
+      - mongo
+    networks:
+      - app-network
+
   postgres:
     image: postgres:latest
     restart: always

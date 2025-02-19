@@ -13,6 +13,7 @@ import { StripeModule } from './stripe/stripe.module';
 import { WebhookModule } from './webhook/webhook.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatModule } from './chat/chat.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ChatModule } from './chat/chat.module';
     StripeModule,
     WebhookModule,
     ChatModule,
+    S3Module,
   ],
 })
 export class AppModule {}
